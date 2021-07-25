@@ -121,7 +121,6 @@ def draw_lives(surf, x, y, lives, img):
         surf.blit(img, img_rect)
 
 
-
 def newmob():
     mob_element = Mob()
     all_sprites.add(mob_element)
@@ -150,7 +149,7 @@ class Explosion(pygame.sprite.Sprite):
                 self.image = explosion_anim[self.size][self.frame]
                 self.rect = self.image.get_rect()
                 self.rect.center = center
-
+      
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -271,6 +270,7 @@ class Mob(pygame.sprite.Sprite):
         self.rotation_speed = random.randrange(-8, 8)
         self.last_update = pygame.time.get_ticks()  ## time when the rotation has to happen
         
+        
     def rotate(self):
         time_now = pygame.time.get_ticks()
         if time_now - self.last_update > 50: # in milliseconds
@@ -288,7 +288,8 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         ## now what if the mob element goes out of the screen
 
-        if (self.rect.top > HEIGHT + 10) or (self.rect.left < -25) or (self.rect.right > WIDTH + 20):
+## changed paddng of exit
+        if (self.rect.top > HEIGHT + 10) or (self.rect.left < -90) or (self.rect.right > WIDTH + 90):
             self.rect.x = random.randrange(0, WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 8)        ## for randomizing the speed of the Mob
@@ -382,6 +383,7 @@ meteor_list = [
 for image in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, image)).convert())
 
+
 ## meteor explosion
 explosion_anim = {}
 explosion_anim['lg'] = []
@@ -453,9 +455,10 @@ while running:
         player = Player()
         all_sprites.add(player)
 
+    ## changed how many spawn
         ## spawn a group of mob
         mobs = pygame.sprite.Group()
-        for i in range(8):      ## 8 mobs
+        for i in range(random.randint(8,12)):      ## 8 mobs
             # mob_element = Mob()
             # all_sprites.add(mob_element)
             # mobs.add(mob_element)
@@ -509,6 +512,7 @@ while running:
 
     ## ^^ the above loop will create the amount of mob objects which were killed spawn again
     #########################
+   
 
     ## check if the player collides with the mob
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle)        ## gives back a list, True makes the mob element disappear
