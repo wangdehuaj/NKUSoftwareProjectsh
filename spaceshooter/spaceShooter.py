@@ -120,6 +120,11 @@ def draw_lives(surf, x, y, lives, img):
         img_rect.y = y
         surf.blit(img, img_rect)
 
+## changed/added alien
+def newalien():
+    alien = Alien()
+    all_sprites.add(alien)
+    mobs.add(alien)
 
 def newmob():
     mob_element = Mob()
@@ -149,7 +154,32 @@ class Explosion(pygame.sprite.Sprite):
                 self.image = explosion_anim[self.size][self.frame]
                 self.rect = self.image.get_rect()
                 self.rect.center = center
-      
+
+## changed / added Alien
+class Alien(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image_orig = pygame.transform.scale(alien_img, (60, 45))
+        self.image_orig.set_colorkey(BLACK)
+        self.image = self.image_orig.copy()
+        self.rect = self.image.get_rect()
+        self.radius = 10
+        self.rect.centerx = 0
+        self.rect.top = 20 
+
+        ## randomize the movements a little more 
+        self.speedx = random.randrange(5, 10)
+        
+        self.last_update = pygame.time.get_ticks()  ## time when the rotation has to happen
+        
+    def update(self):
+        self.rect.x += self.speedx
+        ## now what if the mob element goes out of the screen
+
+## exit
+        if (self.rect.right > WIDTH + 20):
+            self.rect.x = 0
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -248,7 +278,10 @@ class Player(pygame.sprite.Sprite):
         self.hide_timer = pygame.time.get_ticks()
         self.rect.center = (WIDTH / 2, HEIGHT + 200)
 
-
+#added score class
+#class getScore(radius):
+    
+        
 # defines the enemies
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -260,7 +293,7 @@ class Mob(pygame.sprite.Sprite):
         self.radius = int(self.rect.width *.90 / 2)
         self.rect.x = random.randrange(0, WIDTH - self.rect.width)
         self.rect.y = random.randrange(-150, -100)
-        self.speedy = random.randrange(5, 20)        ## for randomizing the speed of the Mob
+        self.speedy = random.randrange(5, 15)        ## for randomizing the speed of the Mob
 
         ## randomize the movements a little more 
         self.speedx = random.randrange(-3, 3)
@@ -379,6 +412,7 @@ meteor_list = [
     'meteorBrown_small2.png',
     'meteorBrown_tiny1.png'
 ]
+alien_img =  pygame.image.load(path.join(img_dir, 'alienShip_1.png')).convert()
 
 for image in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, image)).convert())
@@ -458,11 +492,12 @@ while running:
     ## changed how many spawn
         ## spawn a group of mob
         mobs = pygame.sprite.Group()
-        for i in range(random.randint(8,12)):      ## 8 mobs
+        for i in range(random.randint(8,12)):      ## 8-12 mobs
             # mob_element = Mob()
             # all_sprites.add(mob_element)
             # mobs.add(mob_element)
             newmob()
+        
 
         ## group for bullets
         bullets = pygame.sprite.Group()
@@ -497,7 +532,24 @@ while running:
     ## now as we delete the mob element when we hit one with a bullet, we need to respawn them again
     ## as there will be no mob_elements left out 
     for hit in hits:
-        score += 50 - hit.radius         ## give different scores for hitting big and small metoers
+        ## give different scores for hitting big and small metoers
+        #Changed how things are scored
+        radius = hit.radius
+        print(radius)
+        if radius < 10:
+            gotScore = 50
+        elif radius == 10:
+            gotScore = 1000
+        elif radius < 15:
+            gotScore = 40
+        elif radius < 30:
+            gotScore = 30
+        elif radius < 50:
+            gotScore = 20
+        else:
+            gotScore = 10
+        print(gotScore)
+        score += gotScore
         random.choice(expl_sounds).play()
         # m = Mob()
         # all_sprites.add(m)
@@ -509,6 +561,13 @@ while running:
             all_sprites.add(pow)
             powerups.add(pow)
         newmob()        ## spawn a new mob
+
+        ##Added alien
+        if (score % 1000 == 0):
+            newalien()
+            
+                
+
 
     ## ^^ the above loop will create the amount of mob objects which were killed spawn again
     #########################
