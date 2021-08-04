@@ -196,7 +196,7 @@ class Player(pygame.sprite.Sprite):
             self.speedx = 5
 
         #Fire weapons by holding spacebar
-        if keystate[pygame.K_SPACE]:
+        if keystate[pygame.K_SPACE] and self.hidden == False:
             self.shoot()
 
         ## check for the borders at the left and right
