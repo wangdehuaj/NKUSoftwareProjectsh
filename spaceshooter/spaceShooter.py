@@ -191,7 +191,8 @@ class Player(pygame.sprite.Sprite):
         self.radius = 20
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
-        self.speedx = 0 
+        self.speedx = 0
+        self.speedy = 0
         self.shield = 100
         self.shoot_delay = 250
         self.last_shot = pygame.time.get_ticks()
@@ -213,7 +214,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.centerx = WIDTH / 2
             self.rect.bottom = HEIGHT - 30
 
-        self.speedx = 0     ## makes the player static in the screen by default. 
+        self.speedx = 0
+        self.speedy = 0## makes the player static in the screen by default. 
         # then we have to check whether there is an event hanlding being done for the arrow keys being 
         ## pressed 
 
@@ -221,11 +223,15 @@ class Player(pygame.sprite.Sprite):
         keystate = pygame.key.get_pressed()     
         if keystate[pygame.K_LEFT]:
             self.speedx = -5
-        elif keystate[pygame.K_RIGHT]:
+        if keystate[pygame.K_RIGHT]:
             self.speedx = 5
+        if keystate[pygame.K_UP]:
+            self.speedy = -5
+        if keystate[pygame.K_DOWN]:
+            self.speedy = 5
 
         #Fire weapons by holding spacebar
-        if keystate[pygame.K_SPACE]:
+        if keystate[pygame.K_SPACE] and self.hidden == False:
             self.shoot()
 
         ## check for the borders at the left and right
@@ -233,7 +239,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+        if self.rect.bottom < 0:
+            self.rect.bottom = 0
+        if self.rect.top > HEIGHT:
+            self.rect.top = HEIGHT
 
+        self.rect.y += self.speedy
         self.rect.x += self.speedx
 
     def shoot(self):
