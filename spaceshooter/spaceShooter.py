@@ -556,5 +556,24 @@ while running:
 
     ## Done after drawing everything to the screen
     pygame.display.flip()       
-
+    
+    if running == False:
+        while True:
+            ev = pygame.event.poll()
+            if ev.type == pygame.KEYDOWN:
+                if ev.key == pygame.K_RETURN:
+                    running = True
+                    menu_display = True
+                    break
+                elif ev.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+            elif ev.type == pygame.QUIT:
+                 pygame.quit()
+                 quit()
+            else:
+                 draw_text(screen, "Press [ENTER] to Replay", 30, WIDTH/2, HEIGHT/2)
+                 draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
+                 pygame.display.update()
+                 
 pygame.quit()
