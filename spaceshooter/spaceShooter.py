@@ -556,12 +556,14 @@ while running:
 
     ## Done after drawing everything to the screen
     pygame.display.flip()       
-    
+
+    ## Replay function
     if running == False:
         while True:
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
+                
                     running = True
                     menu_display = True
                     break
