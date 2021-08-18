@@ -228,8 +228,8 @@ class Player(pygame.sprite.Sprite):
 
             """ MOAR POWAH """
             if self.power >= 3:
-                bullet1 = Bullet(self.rect.left, self.rect.centery)
-                bullet2 = Bullet(self.rect.right, self.rect.centery)
+                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
+                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
                 missile1 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
