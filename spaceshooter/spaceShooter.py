@@ -243,6 +243,7 @@ class Player(pygame.sprite.Sprite):
     def powerup(self):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
+        
 
     def hide(self):
         self.hidden = True
