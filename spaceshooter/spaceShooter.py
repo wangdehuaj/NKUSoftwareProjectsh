@@ -283,6 +283,7 @@ class Player(pygame.sprite.Sprite):
     def powerup(self):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
+        
 
     def hide(self):
         self.hidden = True
@@ -342,7 +343,7 @@ class Mob(pygame.sprite.Sprite):
 class Pow(pygame.sprite.Sprite):
     def __init__(self, center):
         pygame.sprite.Sprite.__init__(self)
-        self.type = random.choice(['shield', 'gun'])
+        self.type = random.choice(['shield', 'gun', 'tri_missile'])
         self.image = powerup_images[self.type]
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
@@ -454,6 +455,7 @@ for i in range(9):
 powerup_images = {}
 powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
 powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
+powerup_images['tri_missile'] = pygame.image.load(path.join(img_dir, 'tri_missile.png')).convert()
 
 
 ###################################################
@@ -608,6 +610,8 @@ while running:
             if player.shield >= 100:
                 player.shield = 100
         if hit.type == 'gun':
+            player.powerup()
+        if hit.type == 'tri_missile':
             player.powerup()
 
     ## if player died and the explosion has finished, end game
