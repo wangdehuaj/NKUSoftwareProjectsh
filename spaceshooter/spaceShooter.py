@@ -435,6 +435,8 @@ player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.ogg'))
 ## Game loop
 running = True
 menu_display = True
+pause = False
+
 while running:
     if menu_display:
         main_menu()
@@ -483,9 +485,19 @@ while running:
         # elif event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_SPACE:
         #         player.shoot()      ## we have to define the shoot()  function
+            elif event.key == pygame.K_p:
+                draw_text(screen, "Game Paused...", 30, WIDTH/2, HEIGHT/2)
+                draw_text(screen, "Press [ENTER] to Resume Game", 30, WIDTH/2, (HEIGHT/2)+40)
+                pygame.display.update()
+                pause = True
+                ##.display.update()
+            elif event.key == pygame.K_RETURN and pause == True:
+                pause = False
+                break
 
     #2 Update
-    all_sprites.update()
+    if pause == False:
+        all_sprites.update()
 
 
     ## check if a bullet hit a mob
@@ -577,5 +589,6 @@ while running:
                  draw_text(screen, "Press [ENTER] to Replay", 30, WIDTH/2, HEIGHT/2)
                  draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
                  pygame.display.update()
+    ## Pause code
                  
 pygame.quit()
