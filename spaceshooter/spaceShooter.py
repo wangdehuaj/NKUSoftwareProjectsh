@@ -78,6 +78,11 @@ def main_menu():
                 pygame.quit()
                 quit() 
         else:
+            text_file = open("high_scores.txt", "r")
+            whole_thing = text_file.read()
+            draw_text(screen, "High_score :" + whole_thing , 50, WIDTH/2, (HEIGHT/2) + 100 )
+            text_file.close()
+            
             draw_text(screen, "Press [ENTER] To Begin", 30, WIDTH/2, HEIGHT/2)
             draw_text(screen, "or [Q] To Quit", 30, WIDTH/2, (HEIGHT/2)+40)
             pygame.display.update()
@@ -629,6 +634,20 @@ while running:
     ## if player died and the explosion has finished, end game
     if player.lives == 0 and not death_explosion.alive():
         running = False
+
+        ## write high score
+        with open("high_scores.txt", "r") as f:
+            data = f.read()
+
+            if data == '':
+                data = 0;
+            data1 = int(data);
+            f.close()
+            if(data1 < score):
+                with open("high_scores.txt", "w") as f:       
+                    f.write(str(score))
+            f.close()
+            
         # menu_display = True
         # pygame.display.update()
 
