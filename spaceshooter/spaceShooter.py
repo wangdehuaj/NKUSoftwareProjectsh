@@ -244,10 +244,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.bottom < 0:
-            self.rect.bottom = 0
-        if self.rect.top > HEIGHT:
-            self.rect.top = HEIGHT
+        if self.rect.bottom < 38:
+            self.rect.bottom = 38
+        if self.rect.top > HEIGHT-38:
+            self.rect.top = HEIGHT-38
 
         self.rect.y += self.speedy
         self.rect.x += self.speedx
