@@ -13,4 +13,4 @@ class TestExplosion(unittest.TestCase):
 
     def test_update(self):
         self.test_explosion.update()
-        self.assertEqual(1, 1)
+        self.assertEqual(self.test_explosion.frame, 1)
