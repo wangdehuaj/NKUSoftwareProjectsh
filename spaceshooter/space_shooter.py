@@ -65,6 +65,11 @@ def main_menu():
             pygame.quit()
             quit()
         else:
+            text_file = open("high_scores.txt", "r")
+            whole_thing = text_file.read()
+            draw_text(screen, "High_score :" + whole_thing , 50, WIDTH/2, (HEIGHT/2) + 100 )
+            text_file.close()
+            
             draw_text(screen, "Press [ENTER] To Begin", 30, WIDTH/2, HEIGHT/2)
             draw_text(screen, "or [Q] To Quit", 30, WIDTH/2, (HEIGHT/2)+40)
             pygame.display.update()
@@ -106,10 +111,41 @@ def draw_lives(surf, x, y, lives, img):
         img_rect.y = y
         surf.blit(img, img_rect)
 
+## changed/added alien
+def newalien():
+    alien = Alien()
+    all_sprites.add(alien)
+    mobs.add(alien)
+
 def newmob():
     mob_element = Mob()
     all_sprites.add(mob_element)
     mobs.add(mob_element)
+
+## changed / added Alien
+class Alien(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image_orig = pygame.transform.scale(alien_img, (60, 45))
+        self.image_orig.set_colorkey(BLACK)
+        self.image = self.image_orig.copy()
+        self.rect = self.image.get_rect()
+        self.radius = 10
+        self.rect.centerx = 0
+        self.rect.top = 20 
+
+        ## randomize the movements a little more 
+        self.speedx = random.randrange(5, 10)
+        
+        self.last_update = pygame.time.get_ticks()  ## time when the rotation has to happen
+        
+    def update(self):
+        self.rect.x += self.speedx
+        ## now what if the mob element goes out of the screen
+
+## exit
+        if (self.rect.right > WIDTH + 20):
+            self.rect.x = 0
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -121,7 +157,8 @@ class Player(pygame.sprite.Sprite):
         self.radius = 20
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
-        self.speedx = 0 
+        self.speedx = 0
+        self.speedy = 0
         self.shield = 100
         self.shoot_delay = 250
         self.last_shot = pygame.time.get_ticks()
@@ -143,19 +180,24 @@ class Player(pygame.sprite.Sprite):
             self.rect.centerx = WIDTH / 2
             self.rect.bottom = HEIGHT - 30
 
-        self.speedx = 0     ## makes the player static in the screen by default.
-        # then we have to check whether there is an event hanlding being done for the arrow keys being
-        ## pressed
+        self.speedx = 0
+        self.speedy = 0## makes the player static in the screen by default. 
+        # then we have to check whether there is an event hanlding being done for the arrow keys being 
+        ## pressed 
 
         ## will give back a list of the keys which happen to be pressed down at that moment
         keystate = pygame.key.get_pressed()     
         if keystate[pygame.K_LEFT]:
             self.speedx = -5
-        elif keystate[pygame.K_RIGHT]:
+        if keystate[pygame.K_RIGHT]:
             self.speedx = 5
+        if keystate[pygame.K_UP]:
+            self.speedy = -5
+        if keystate[pygame.K_DOWN]:
+            self.speedy = 5
 
         #Fire weapons by holding spacebar
-        if keystate[pygame.K_SPACE]:
+        if keystate[pygame.K_SPACE] and self.hidden == False:
             self.shoot()
 
         ## check for the borders at the left and right
@@ -163,7 +205,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+        if self.rect.bottom < 0:
+            self.rect.bottom = 0
+        if self.rect.top > HEIGHT:
+            self.rect.top = HEIGHT
 
+        self.rect.y += self.speedy
         self.rect.x += self.speedx
 
     def shoot(self):
@@ -187,8 +234,8 @@ class Player(pygame.sprite.Sprite):
 
             """ MOAR POWAH """
             if self.power >= 3:
-                bullet1 = Bullet(self.rect.left, self.rect.centery)
-                bullet2 = Bullet(self.rect.right, self.rect.centery)
+                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
+                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
                 missile1 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
@@ -202,6 +249,7 @@ class Player(pygame.sprite.Sprite):
     def powerup(self):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
+        
 
     def hide(self):
         self.hidden = True
@@ -212,7 +260,7 @@ class Player(pygame.sprite.Sprite):
 class Pow(pygame.sprite.Sprite):
     def __init__(self, center):
         pygame.sprite.Sprite.__init__(self)
-        self.type = random.choice(['shield', 'gun'])
+        self.type = random.choice(['shield', 'gun', 'tri_missile'])
         self.image = powerup_images[self.type]
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
@@ -283,10 +331,13 @@ player_mini_img.set_colorkey(BLACK)
 bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
 missile_img = pygame.image.load(path.join(img_dir, 'missile.png')).convert_alpha()
 
+alien_img =  pygame.image.load(path.join(img_dir, 'alienShip_1.png')).convert()
+
 ## load power ups
 powerup_images = {}
 powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
 powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
+powerup_images['tri_missile'] = pygame.image.load(path.join(img_dir, 'tri_missile.png')).convert()
 
 
 ###################################################
@@ -315,6 +366,8 @@ player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.ogg'))
 ## Game loop
 running = True
 menu_display = True
+pause = False
+
 while running:
     if menu_display:
         main_menu()
@@ -333,13 +386,15 @@ while running:
         player = Player()
         all_sprites.add(player)
 
+    ## changed how many spawn
         ## spawn a group of mob
         mobs = pygame.sprite.Group()
-        for i in range(8):      ## 8 mobs
+        for i in range(random.randint(8,12)):      ## 8-12 mobs
             # mob_element = Mob()
             # all_sprites.add(mob_element)
             # mobs.add(mob_element)
             newmob()
+        
 
         ## group for bullets
         bullets = pygame.sprite.Group()
@@ -363,9 +418,19 @@ while running:
         # elif event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_SPACE:
         #         player.shoot()      ## we have to define the shoot()  function
+            elif event.key == pygame.K_p:
+                draw_text(screen, "Game Paused...", 30, WIDTH/2, HEIGHT/2)
+                draw_text(screen, "Press [ENTER] to Resume Game", 30, WIDTH/2, (HEIGHT/2)+40)
+                pygame.display.update()
+                pause = True
+                ##.display.update()
+            elif event.key == pygame.K_RETURN and pause == True:
+                pause = False
+                break
 
     #2 Update
-    all_sprites.update()
+    if pause == False:
+        all_sprites.update()
 
 
     ## check if a bullet hit a mob
@@ -374,7 +439,24 @@ while running:
     ## now as we delete the mob element when we hit one with a bullet, we need to respawn them again
     ## as there will be no mob_elements left out
     for hit in hits:
-        score += 50 - hit.radius         ## give different scores for hitting big and small metoers
+        ## give different scores for hitting big and small metoers
+        #Changed how things are scored
+        radius = hit.radius
+        print(radius)
+        if radius < 10:
+            gotScore = 50
+        elif radius == 10:
+            gotScore = 1000
+        elif radius < 15:
+            gotScore = 40
+        elif radius < 30:
+            gotScore = 30
+        elif radius < 50:
+            gotScore = 20
+        else:
+            gotScore = 10
+        print(gotScore)
+        score += gotScore
         random.choice(expl_sounds).play()
         # m = Mob()
         # all_sprites.add(m)
@@ -387,8 +469,16 @@ while running:
             powerups.add(pow)
         newmob()        ## spawn a new mob
 
+        ##Added alien
+        if (score % 1000 == 0):
+            newalien()
+            
+                
+
+
     ## ^^ the above loop will create the amount of mob objects which were killed spawn again
     #########################
+   
 
     ## check if the player collides with the mob
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
@@ -415,10 +505,26 @@ while running:
                 player.shield = 100
         if hit.type == 'gun':
             player.powerup()
+        if hit.type == 'tri_missile':
+            player.powerup()
 
     ## if player died and the explosion has finished, end game
     if player.lives == 0 and not death_explosion.alive():
         running = False
+
+        ## write high score
+        with open("high_scores.txt", "r") as f:
+            data = f.read()
+
+            if data == '':
+                data = 0;
+            data1 = int(data);
+            f.close()
+            if(data1 < score):
+                with open("high_scores.txt", "w") as f:       
+                    f.write(str(score))
+            f.close()
+            
         # menu_display = True
         # pygame.display.update()
 
@@ -437,4 +543,26 @@ while running:
     ## Done after drawing everything to the screen
     pygame.display.flip()
 
+    ## Replay function
+    if running == False:
+        while True:
+            ev = pygame.event.poll()
+            if ev.type == pygame.KEYDOWN:
+                if ev.key == pygame.K_RETURN:
+                
+                    running = True
+                    menu_display = True
+                    break
+                elif ev.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+            elif ev.type == pygame.QUIT:
+                 pygame.quit()
+                 quit()
+            else:
+                 draw_text(screen, "Press [ENTER] to Replay", 30, WIDTH/2, HEIGHT/2)
+                 draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
+                 pygame.display.update()
+    ## Pause code
+                 
 pygame.quit()

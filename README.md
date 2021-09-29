@@ -1,3 +1,20 @@
+# README Section for Software Testing and Maintenance
+Team name: Team Xtreme
+
+Members:
+- Kunle Akinpelu
+- Evan Tellep
+- Marquis McClendon
+- Sarah Nottingham
+- Connor Tellep
+- Kyle Riley
+
+Description: This project is a very basic space shooting arcade style game written in python. It uses the “pygame” library as its primary dependency.
+
+Enhancements: We plan to fix a number of bugs and add a number of features. Some of these things include but are not limited to splititng the game into multiple files, adding enemies, not letting the player shoot after death, and adding a replay oprion when you die instead of closing out of the game entirely.
+
+
+
 ## Space Shooter
 
 The classic retro game recreated using `Pygame` and `python`.
