@@ -45,3 +45,4 @@ meteor_list = [
 
 for image in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, image)).convert())
+    
