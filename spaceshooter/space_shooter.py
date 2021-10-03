@@ -209,9 +209,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = 38
         if self.rect.top > HEIGHT-38:
             self.rect.top = HEIGHT-38
-
-        self.rect.y += self.speedy
+            
         self.rect.x += self.speedx
+        self.rect.y += self.speedy
 
     def shoot(self):
         ## to tell the bullet where to spawn
