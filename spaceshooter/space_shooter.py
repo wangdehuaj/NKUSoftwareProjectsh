@@ -78,7 +78,14 @@ def main_menu():
     ready = pygame.mixer.Sound(path.join(sound_folder, 'getready.ogg'))
     ready.play()
     screen.fill(BLACK)
-    draw_text(screen, "GET READY!", 40, WIDTH/2, HEIGHT/2)
+    draw_text(screen, "GET READY!", 40, WIDTH/2, HEIGHT/4)
+    draw_text(screen, "Instructions: ", 30, WIDTH/2, HEIGHT/2)    
+    draw_text(screen, "Use the arrow keys to move, ", 20, WIDTH/2, (HEIGHT/2)+30)
+    draw_text(screen, "press [SPACE] to fire, ", 20, WIDTH/2, (HEIGHT/2)+55)
+    draw_text(screen, "press [p] to pause, ", 20, WIDTH/2, (HEIGHT/2)+80)
+    draw_text(screen, "press [ENTER] to resume, ", 20, WIDTH/2, (HEIGHT/2)+105)
+    draw_text(screen, "press [esc] to leave the game ", 20, WIDTH/2, (HEIGHT/2)+130)
+    
     pygame.display.update()
 
 
