@@ -42,6 +42,10 @@ meteor_list = [
     'meteorBrown_small2.png',
     'meteorBrown_tiny1.png'
 ]
+enemy_img = pygame.image.load(path.join(img_dir, 'enemyShip_black.png')).convert()
+bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
+all_sprites = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 for image in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, image)).convert())

@@ -24,6 +24,7 @@ import pygame
 from constant import *
 from explosion_class import Explosion
 from mob_class import Mob
+from enemyShip_class import enemyShip
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -121,6 +122,11 @@ def newmob():
     mob_element = Mob()
     all_sprites.add(mob_element)
     mobs.add(mob_element)
+
+def newEnemy():
+    enemy = enemyShip()
+    all_sprites.add(enemy)
+    mobs.add(enemy)
 
 ## changed / added Alien
 class Alien(pygame.sprite.Sprite):
@@ -394,6 +400,8 @@ while running:
             # all_sprites.add(mob_element)
             # mobs.add(mob_element)
             newmob()
+
+        newEnemy()
         
 
         ## group for bullets
@@ -442,20 +450,20 @@ while running:
         ## give different scores for hitting big and small metoers
         #Changed how things are scored
         radius = hit.radius
-        print(radius)
         if radius < 10:
             gotScore = 50
         elif radius == 10:
-            gotScore = 1000
+            gotScore = 500
         elif radius < 15:
             gotScore = 40
         elif radius < 30:
             gotScore = 30
         elif radius < 50:
             gotScore = 20
-        else:
+        elif radius < 55:
             gotScore = 10
-        print(gotScore)
+        else:
+            gotScore = 5
         score += gotScore
         random.choice(expl_sounds).play()
         # m = Mob()
@@ -472,7 +480,6 @@ while running:
         ##Added alien
         if (score % 1000 == 0):
             newalien()
-            
                 
 
 
