@@ -42,7 +42,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         ## now what if the mob element goes out of the screen
 
-        if (self.rect.top > HEIGHT + 10) or (self.rect.left < -25) or (self.rect.right > WIDTH + 20):
+        if (self.rect.top > HEIGHT + 10) or (self.rect.left < -100) or (self.rect.right > WIDTH + 100):
             self.rect.x = random.randrange(0, WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 8)        ## for randomizing the speed of the Mob
