@@ -16,7 +16,7 @@ class enemyShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.radius = 20
         self.rect.centerx = WIDTH / 2
-        self.rect.top = HEIGHT / 2
+        self.rect.top = 30
         self.speedx = 5
         self.last_shot = pygame.time.get_ticks()
         self.shoot_delay = 250
