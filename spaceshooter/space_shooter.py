@@ -236,6 +236,7 @@ class Player(pygame.sprite.Sprite):
                 all_sprites.add(bullet)
                 bullets.add(bullet)
                 shooting_sound.play()
+
             if self.power == 2:
                 bullet1 = Bullet(self.rect.left, self.rect.centery)
                 bullet2 = Bullet(self.rect.right, self.rect.centery)
@@ -245,18 +246,41 @@ class Player(pygame.sprite.Sprite):
                 bullets.add(bullet2)
                 shooting_sound.play()
 
-            """ MOAR POWAH """
-            if self.power >= 3:
-                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
-                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
-                missile1 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+            if self.power == 3:
+                bullet1 = Bullet(self.rect.left, self.rect.centery) # bullet shoots from left of ship
+                bullet2 = Bullet(self.rect.right, self.rect.centery)# bullet shoots from right of ship
+                bullet3 = Bullet(self.rect.centerx, self.rect.top) # bullet shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
-                all_sprites.add(missile1)
+                all_sprites.add(bullet3)
                 bullets.add(bullet1)
                 bullets.add(bullet2)
-                bullets.add(missile1)
+                bullets.add(bullet3)
                 shooting_sound.play()
+
+            if self.power == 4:
+                bullet1 = Bullet(self.rect.left, self.rect.centery) # Bullet shoots from left of ship
+                bullet2 = Bullet(self.rect.right, self.rect.centery)# Bullet shoots from right of ship
+                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(bullet1)
+                all_sprites.add(bullet2)
+                all_sprites.add(bullet3)
+                bullets.add(bullet1)
+                bullets.add(bullet2)
+                bullets.add(bullet3)
+                shooting_sound.play()
+                missile_sound.play()
+
+            if self.power >= 5:
+                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
+                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
+                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(bullet1)
+                all_sprites.add(bullet2)
+                all_sprites.add(bullet3)
+                bullets.add(bullet1)
+                bullets.add(bullet2)
+                bullets.add(bullet3)
                 missile_sound.play()
 
     def powerup(self):
@@ -273,7 +297,7 @@ class Player(pygame.sprite.Sprite):
 class Pow(pygame.sprite.Sprite):
     def __init__(self, center):
         pygame.sprite.Sprite.__init__(self)
-        self.type = random.choice(['shield', 'gun', 'tri_missile'])
+        self.type = random.choice(['shield', 'gun'])
         self.image = powerup_images[self.type]
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
@@ -350,8 +374,6 @@ alien_img =  pygame.image.load(path.join(img_dir, 'alienShip_1.png')).convert()
 powerup_images = {}
 powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
 powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
-powerup_images['tri_missile'] = pygame.image.load(path.join(img_dir, 'tri_missile.png')).convert()
-
 
 ###################################################
 
@@ -518,8 +540,6 @@ while running:
             if player.shield >= 100:
                 player.shield = 100
         if hit.type == 'gun':
-            player.powerup()
-        if hit.type == 'tri_missile':
             player.powerup()
 
     ## if player died and the explosion has finished, end game
