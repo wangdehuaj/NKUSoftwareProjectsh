@@ -16,23 +16,32 @@ class enemyShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.radius = 20
         self.rect.centerx = WIDTH / 2
-        self.rect.top = 30
+        self.rect.top = 20
         self.speedx = 5
+        self.speedy = 3
         self.last_shot = pygame.time.get_ticks()
         self.shoot_delay = 250
         #self.last_update = pygame.time.get_ticks()
 
     def update(self):
-        if (self.rect.right > WIDTH - 20):
+        if (self.rect.right > WIDTH - 10):
             self.speedx = -5
-        elif (self.rect.left < 20):
+            self.speedy = 3
+        elif (self.rect.left < 10):
             self.speedx = 5
+            self.speedy = -3
+        if (self.rect.right > WIDTH / 2 and self.speedx == 5):
+            self.speedy = 3
+        elif (self.rect.left < WIDTH / 2 and self.speedx == -5):
+            self.speedy = -3
         self.rect.x += self.speedx
+        self.rect.y += self.speedy
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_SPACE]:
             self.shoot()
 
     def shoot(self):
+        print('shoot')
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
@@ -48,23 +57,22 @@ class enemyShip(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        print('initialized bullet')
+        print('init bull')
         pygame.sprite.Sprite.__init__(self)
         self.image = ebullet_img
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         ## place the bullet according to the current position of the player
-        self.rect.top = 50 
-        self.rect.centerx =50
-        self.speedy = -10
+        self.rect.top = y 
+        self.rect.centerx = x
+        self.speedy = 10
 
     def update(self):
         print('updated bullet')
         """should spawn right in front of the player"""
         self.rect.y += self.speedy
         ## kill the sprite after it moves over the top border
-        if self.rect.bottom < 0:
-            print('kill')
+        if self.rect.top > HEIGHT:
             self.kill()
 
         ## now we need a way to shoot
