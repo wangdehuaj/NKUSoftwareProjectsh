@@ -499,7 +499,7 @@ while running:
         newmob()
         if player.shield <= 0: 
             player_die_sound.play()
-            death_explosion = Explosion(player.rect.center, 'player')
+            death_explosion = Explosion(player.rect.center, 'lg')
             all_sprites.add(death_explosion)
             # running = False     ## GAME OVER 3:D
             player.hide()

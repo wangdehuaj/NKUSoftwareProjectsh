@@ -10,7 +10,7 @@ explosion_anim['lg'] = []
 explosion_anim['sm'] = []
 explosion_anim['player'] = []
 for i in range(9):
-    filename = 'regularExplosion0{}.png'.format(i)
+    filename = 'sonicExplosion0{}.png'.format(i)
     img = pygame.image.load(path.join(img_dir, filename)).convert()
     img.set_colorkey(BLACK)
     ## resize the explosion
