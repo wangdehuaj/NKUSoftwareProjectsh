@@ -430,15 +430,7 @@ while running:
         #     if event.key == pygame.K_SPACE:
         #         player.shoot()      ## we have to define the shoot()  function
             elif event.key == pygame.K_p:
-                draw_text(screen, "Game Paused...", 30, WIDTH/2, HEIGHT/2)
-                draw_text(screen, "Press [ENTER] to Resume Game", 30, WIDTH/2, (HEIGHT/2)+40)
-                pygame.display.update()
-                pause = True
-                ##.display.update()
-            elif event.key == pygame.K_RETURN and pause == True:
-                pause = False
-                break
-
+               pause = True
     #2 Update
     if pause == False:
         all_sprites.update()
@@ -572,5 +564,15 @@ while running:
                  draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
                  pygame.display.update()
     ## Pause code
-                 
+    if pause == True:
+        while True:
+            ev = pygame.event.poll()
+            if ev.type == pygame.KEYDOWN:
+                if ev.key == pygame.K_RETURN:
+                    pause = False
+                    break
+            else:
+                draw_text(screen, "Game Paused...", 30, WIDTH/2, HEIGHT/2)
+                draw_text(screen, "Press [ENTER] to resume game", 30, WIDTH/2, (HEIGHT/2)+40)
+                pygame.display.update()
 pygame.quit()
