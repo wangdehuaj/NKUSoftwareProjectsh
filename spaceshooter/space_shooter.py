@@ -593,8 +593,13 @@ while running:
                 if ev.key == pygame.K_RETURN:
                     pause = False
                     break
+                elif ev.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()
+                    
             else:
                 draw_text(screen, "Game Paused...", 30, WIDTH/2, HEIGHT/2)
                 draw_text(screen, "Press [ENTER] to resume game", 30, WIDTH/2, (HEIGHT/2)+40)
+                draw_text(screen, "or [ESC] to exit game", 30, WIDTH/2, (HEIGHT/2)+80)
                 pygame.display.update()
 pygame.quit()
