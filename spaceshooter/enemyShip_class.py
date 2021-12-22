@@ -41,7 +41,7 @@ class enemyShip(pygame.sprite.Sprite):
             self.shoot()
 
     def shoot(self):
-        print('shoot')
+        ##print('shoot')
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
@@ -57,7 +57,7 @@ class enemyShip(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        print('init bull')
+        ##print('init bull')
         pygame.sprite.Sprite.__init__(self)
         self.image = ebullet_img
         self.image.set_colorkey(BLACK)
@@ -68,7 +68,7 @@ class Bullet(pygame.sprite.Sprite):
         self.speedy = 10
 
     def update(self):
-        print('updated bullet')
+        ##print('updated bullet')
         """should spawn right in front of the player"""
         self.rect.y += self.speedy
         ## kill the sprite after it moves over the top border
