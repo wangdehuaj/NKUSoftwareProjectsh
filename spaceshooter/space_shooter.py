@@ -26,6 +26,7 @@ from explosion_class import Explosion
 from mob_class import Mob
 from enemyShip_class import enemyShip
 from alien_class import Alien
+from bullet_class import Bullet
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -306,28 +307,6 @@ class Pow(pygame.sprite.Sprite):
 
 
 
-## defines the sprite for bullets
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = bullet_img
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        ## place the bullet according to the current position of the player
-        self.rect.bottom = y 
-        self.rect.centerx = x
-        self.speedy = -10
-
-    def update(self):
-        """should spawn right in front of the player"""
-        self.rect.y += self.speedy
-        ## kill the sprite after it moves over the top border
-        if self.rect.bottom < 0:
-            self.kill()
-
-        ## now we need a way to shoot
-        ## lets bind it to "spacebar".
-        ## adding an event for it in Game loop
 
 ## FIRE ZE MISSILES
 class Missile(pygame.sprite.Sprite):
