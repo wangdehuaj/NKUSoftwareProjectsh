@@ -556,10 +556,10 @@ while running:
                     break
                 elif ev.key == pygame.K_q:
                     pygame.quit()
-                    quit()
+                    break
             elif ev.type == pygame.QUIT:
                  pygame.quit()
-                 quit()
+                 break
             else:
                  draw_text(screen, "Press [ENTER] to Replay", 30, WIDTH/2, HEIGHT/2)
                  draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
@@ -567,10 +567,12 @@ while running:
     ## Pause code
     if pause == True:
         while True:
+            pygame.mixer.music.pause()
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
                     pause = False
+                    pygame.mixer.music.unpause()
                     break
                 elif ev.key == pygame.K_ESCAPE:
                     running = False
