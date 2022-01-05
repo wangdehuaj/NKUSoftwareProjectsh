@@ -568,10 +568,12 @@ while running:
     ## Pause code
     if pause == True:
         while True:
+            pygame.mixer.music.pause()
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
                     pause = False
+                    pygame.mixer.music.unpause()
                     break
                 elif ev.key == pygame.K_ESCAPE:
                     running = False
