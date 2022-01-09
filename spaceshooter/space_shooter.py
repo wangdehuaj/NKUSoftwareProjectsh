@@ -243,7 +243,7 @@ class Player(pygame.sprite.Sprite):
             if self.power == 3:
                 bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
                 bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
-                bullet3 = Bullet(self.rect.centerx, self.rect.top) # bullet shoots from center of ship
+                bullet3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
                 all_sprites.add(bullet3)
@@ -394,6 +394,7 @@ while running:
         all_sprites = pygame.sprite.Group()
         player = Player()
         all_sprites.add(player)
+        eShip = enemyShip()
 
     ## changed how many spawn
         ## spawn a group of mob
