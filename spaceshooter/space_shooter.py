@@ -27,6 +27,7 @@ from mob_class import Mob
 from enemyShip_class import enemyShip
 from alien_class import Alien
 from bullet_class import Bullet
+from missile_class import Missile
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -304,26 +305,6 @@ class Pow(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         ## kill the sprite after it moves over the top border
         if self.rect.top > HEIGHT:
-            self.kill()
-
-
-
-
-## FIRE ZE MISSILES
-class Missile(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = missile_img
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.bottom = y
-        self.rect.centerx = x
-        self.speedy = -10
-
-    def update(self):
-        """should spawn right in front of the player"""
-        self.rect.y += self.speedy
-        if self.rect.bottom < 0:
             self.kill()
 
 
