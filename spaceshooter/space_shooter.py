@@ -165,6 +165,7 @@ class Player(pygame.sprite.Sprite):
         self.speedx = 0
         self.speedy = 0
         self.shield = 100
+        self.direction = -10
         self.bulletstatus = 1
         self.missilestatus = 1
         self.shoot_delay = 250
@@ -226,14 +227,14 @@ class Player(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             if self.power == 1:
-                bullet = Bullet(self.rect.centerx, self.rect.top)
+                bullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
                 all_sprites.add(bullet)
                 bullets.add(bullet)
                 shooting_sound.play()
 
             if self.power == 2:
-                bullet1 = Bullet(self.rect.left, self.rect.centery)
-                bullet2 = Bullet(self.rect.right, self.rect.centery)
+                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction)
+                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
                 bullets.add(bullet1)
@@ -241,9 +242,9 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 3:
-                bullet1 = Bullet(self.rect.left, self.rect.centery) # bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery)# bullet shoots from right of ship
-                bullet3 = Bullet(self.rect.centerx, self.rect.top) # bullet shoots from center of ship
+                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
+                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
+                bullet3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
                 all_sprites.add(bullet3)
@@ -253,8 +254,8 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 4:
-                bullet1 = Bullet(self.rect.left, self.rect.centery) # Bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery)# Bullet shoots from right of ship
+                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
+                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
                 bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
                 all_sprites.add(bullet1)
                 all_sprites.add(bullet2)
@@ -367,6 +368,7 @@ while running:
         all_sprites = pygame.sprite.Group()
         player = Player()
         all_sprites.add(player)
+        eShip = enemyShip()
 
     ## changed how many spawn
         ## spawn a group of mob
@@ -530,10 +532,10 @@ while running:
                     break
                 elif ev.key == pygame.K_q:
                     pygame.quit()
-                    quit()
+                    break
             elif ev.type == pygame.QUIT:
                  pygame.quit()
-                 quit()
+                 break
             else:
                  draw_text(screen, "Press [ENTER] to Replay", 30, WIDTH/2, HEIGHT/2)
                  draw_text(screen, "or [Q] to Quit", 30, WIDTH/2, (HEIGHT/2)+40)
@@ -541,10 +543,12 @@ while running:
     ## Pause code
     if pause == True:
         while True:
+            pygame.mixer.music.pause()
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
                     pause = False
+                    pygame.mixer.music.unpause()
                     break
                 elif ev.key == pygame.K_ESCAPE:
                     running = False
