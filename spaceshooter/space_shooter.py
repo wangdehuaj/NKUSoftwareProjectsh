@@ -27,7 +27,7 @@ from mob_class import Mob
 from enemyShip_class import enemyShip
 from alien_class import Alien
 from bullet_class import Bullet
-from missile_class import Missile
+from pow_class import Pow
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -288,23 +288,21 @@ class Player(pygame.sprite.Sprite):
         self.hide_timer = pygame.time.get_ticks()
         self.rect.center = (WIDTH / 2, HEIGHT + 200)
 
-## defines the sprite for Powerups
-class Pow(pygame.sprite.Sprite):
-    def __init__(self, center):
+## FIRE ZE MISSILES
+class Missile(pygame.sprite.Sprite):
+    def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.type = random.choice(['shield', 'gun'])
-        self.image = powerup_images[self.type]
+        self.image = missile_img
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        ## place the bullet according to the current position of the player
-        self.rect.center = center
-        self.speedy = 2
+        self.rect.bottom = y
+        self.rect.centerx = x
+        self.speedy = -10
 
     def update(self):
         """should spawn right in front of the player"""
         self.rect.y += self.speedy
-        ## kill the sprite after it moves over the top border
-        if self.rect.top > HEIGHT:
+        if self.rect.bottom < 0:
             self.kill()
 
 
@@ -324,11 +322,6 @@ bullet_mini_img = pygame.transform.scale(bullet_img, (10, 19))
 bullet_mini_img.set_colorkey(BLACK)
 missile_mini_img = pygame.transform.scale(missile_img, (12, 19))
 missile_mini_img.set_colorkey(BLACK)
-
-## load power ups
-powerup_images = {}
-powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
-powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
 
 ###################################################
 
