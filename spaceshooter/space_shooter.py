@@ -28,6 +28,7 @@ from enemyShip_class import enemyShip
 from alien_class import Alien
 from bullet_class import Bullet
 from pow_class import Pow
+from missile_class import *
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -288,22 +289,7 @@ class Player(pygame.sprite.Sprite):
         self.hide_timer = pygame.time.get_ticks()
         self.rect.center = (WIDTH / 2, HEIGHT + 200)
 
-## FIRE ZE MISSILES
-class Missile(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = missile_img
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.bottom = y
-        self.rect.centerx = x
-        self.speedy = -10
 
-    def update(self):
-        """should spawn right in front of the player"""
-        self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill()
 
 
 ###################################################
@@ -315,7 +301,6 @@ background_rect = background.get_rect()
 
 player_img = pygame.image.load(path.join(img_dir, 'playerShip1_orange.png')).convert()
 bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
-missile_img = pygame.image.load(path.join(img_dir, 'missile.png')).convert_alpha()
 player_mini_img = pygame.transform.scale(player_img, (25, 19))
 player_mini_img.set_colorkey(BLACK)
 bullet_mini_img = pygame.transform.scale(bullet_img, (10, 19))
