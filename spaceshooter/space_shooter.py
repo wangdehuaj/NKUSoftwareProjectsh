@@ -230,53 +230,53 @@ class Player(pygame.sprite.Sprite):
             if self.power == 1:
                 bullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
                 all_sprites.add(bullet)
-                bullets.add(bullet)
+                weapons.add(bullet)
                 shooting_sound.play()
 
             if self.power == 2:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction)
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction)
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
                 shooting_sound.play()
 
             if self.power == 3:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
-                bullet3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
+                weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 shooting_sound.play()
 
             if self.power == 4:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
-                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 shooting_sound.play()
                 missile_sound.play()
 
             if self.power >= 5:
-                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
-                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
-                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 missile_sound.play()
 
     def powerup(self):
@@ -368,7 +368,7 @@ while running:
         
 
         ## group for bullets
-        bullets = pygame.sprite.Group()
+        weapons = pygame.sprite.Group()
         powerups = pygame.sprite.Group()
 
         #### Score board variable
@@ -398,7 +398,7 @@ while running:
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
-    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+    hits = pygame.sprite.groupcollide(mobs, weapons, True, True)
     ## now as we delete the mob element when we hit one with a bullet, we need to respawn them again
     ## as there will be no mob_elements left out
     for hit in hits:
