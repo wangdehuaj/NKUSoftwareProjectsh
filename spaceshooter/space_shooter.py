@@ -167,8 +167,8 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         self.shield = 100
         self.direction = -10
-        self.bulletstatus = 1
-        self.missilestatus = 1
+        self.bulletstatus = 0
+        self.missilestatus = 0
         self.shoot_delay = 250
         self.last_shot = pygame.time.get_ticks()
         self.lives = 3
@@ -228,12 +228,16 @@ class Player(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             if self.power == 1:
+                self.bulletstatus = 1
+                self.missilestatus = 0
                 bullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
                 all_sprites.add(bullet)
                 weapons.add(bullet)
                 shooting_sound.play()
 
             if self.power == 2:
+                self.bulletstatus = 2
+                self.missilestatus = 0
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction)
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)
                 all_sprites.add(weaponslot1)
@@ -243,6 +247,8 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 3:
+                self.bulletstatus = 3
+                self.missilestatus = 0
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
                 weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
@@ -255,6 +261,7 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 4:
+                self.missilestatus = 1
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
                 weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
@@ -268,6 +275,7 @@ class Player(pygame.sprite.Sprite):
                 missile_sound.play()
 
             if self.power >= 5:
+                self.missilestatus = 3
                 weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
                 weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
                 weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
