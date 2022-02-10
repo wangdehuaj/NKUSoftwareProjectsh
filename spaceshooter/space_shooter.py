@@ -89,7 +89,8 @@ def main_menu():
     draw_text(screen, "press [SPACE] to fire, ", 20, WIDTH/2, (HEIGHT/2)+55)
     draw_text(screen, "press [p] to pause, ", 20, WIDTH/2, (HEIGHT/2)+80)
     draw_text(screen, "press [ENTER] to resume, ", 20, WIDTH/2, (HEIGHT/2)+105)
-    draw_text(screen, "press [esc] to leave the game ", 20, WIDTH/2, (HEIGHT/2)+130)
+    draw_text(screen, "press [esc] to leave the game, ", 20, WIDTH/2, (HEIGHT/2)+130)
+    draw_text(screen, "press [m] to mute/unmute ", 20, WIDTH/2, (HEIGHT/2)+155)
     
     pygame.display.update()
 
@@ -335,6 +336,7 @@ player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.ogg'))
 running = True
 menu_display = True
 pause = False
+mute = False
 
 while running:
     if menu_display:
@@ -391,9 +393,18 @@ while running:
         #         player.shoot()      ## we have to define the shoot()  function
             elif event.key == pygame.K_p:
                pause = True
+            elif event.key == pygame.K_m:
+                mute = not mute
     #2 Update
     if pause == False:
         all_sprites.update()
+
+    if mute == True:
+        pygame.mixer.pause()
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.unpause()
+        pygame.mixer.music.unpause()
 
 
     ## check if a bullet hit a mob
