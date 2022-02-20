@@ -1,32 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author: tasdik
-# @Contributers : Branden (Github: @bardlean86)
-# @Date:   2016-01-17
-# @Email:  prodicus@outlook.com  Github: @tasdikrahman
-# @Last Modified by:   tasdik
-# @Last Modified by:   Branden
-# @Last Modified by:   Dic3
-# @Last Modified time: 2016-10-16
-# MIT License. You can find a copy of the License @ http://prodicus.mit-license.org
 
-## Game music Attribution
-## Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3 <http://creativecommons.org/licenses/by/3.0/>
-
-## Additional assets by: Branden M. Ardelean (Github: @bardlean86)
-
-from __future__ import division
-import random
-from os import path
-
-import pygame
-
-from constant import *
 from explosion_class import Explosion
 from mob_class import Mob
 from enemyShip_class import enemyShip
 from alien_class import Alien
 from bullet_class import Bullet
+from pow_class import Pow
+from missile_class import *
 
 # ## assets folder
 # img_dir = path.join(path.dirname(__file__), 'assets')
@@ -231,53 +210,53 @@ class Player(pygame.sprite.Sprite):
             if self.power == 1:
                 bullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
                 all_sprites.add(bullet)
-                bullets.add(bullet)
+                weapons.add(bullet)
                 shooting_sound.play()
 
             if self.power == 2:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction)
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction)
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
                 shooting_sound.play()
 
             if self.power == 3:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
-                bullet3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
+                weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 shooting_sound.play()
 
             if self.power == 4:
-                bullet1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
-                bullet2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
-                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
+                weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 shooting_sound.play()
                 missile_sound.play()
 
             if self.power >= 5:
-                bullet1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
-                bullet2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
-                bullet3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
-                all_sprites.add(bullet1)
-                all_sprites.add(bullet2)
-                all_sprites.add(bullet3)
-                bullets.add(bullet1)
-                bullets.add(bullet2)
-                bullets.add(bullet3)
+                weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
                 missile_sound.play()
 
     def powerup(self):
@@ -286,50 +265,11 @@ class Player(pygame.sprite.Sprite):
         
 
     def hide(self):
-        print 'running kill'
-        global player_hide_timer
-        player_hide_timer = pygame.time.get_ticks()
-        self.kill()
+        self.hidden = True
+        self.hide_timer = pygame.time.get_ticks()
+        self.rect.center = (WIDTH / 2, HEIGHT + 200)
 
 
-## defines the sprite for Powerups
-class Pow(pygame.sprite.Sprite):
-    def __init__(self, center):
-        pygame.sprite.Sprite.__init__(self)
-        self.type = random.choice(['shield', 'gun'])
-        self.image = powerup_images[self.type]
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        ## place the bullet according to the current position of the player
-        self.rect.center = center
-        self.speedy = 2
-
-    def update(self):
-        """should spawn right in front of the player"""
-        self.rect.y += self.speedy
-        ## kill the sprite after it moves over the top border
-        if self.rect.top > HEIGHT:
-            self.kill()
-
-
-
-
-## FIRE ZE MISSILES
-class Missile(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = missile_img
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.bottom = y
-        self.rect.centerx = x
-        self.speedy = -10
-
-    def update(self):
-        """should spawn right in front of the player"""
-        self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill()
 
 
 ###################################################
@@ -341,18 +281,12 @@ background_rect = background.get_rect()
 
 player_img = pygame.image.load(path.join(img_dir, 'playerShip1_orange.png')).convert()
 bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
-missile_img = pygame.image.load(path.join(img_dir, 'missile.png')).convert_alpha()
 player_mini_img = pygame.transform.scale(player_img, (25, 19))
 player_mini_img.set_colorkey(BLACK)
 bullet_mini_img = pygame.transform.scale(bullet_img, (10, 19))
 bullet_mini_img.set_colorkey(BLACK)
 missile_mini_img = pygame.transform.scale(missile_img, (12, 19))
 missile_mini_img.set_colorkey(BLACK)
-
-## load power ups
-powerup_images = {}
-powerup_images['shield'] = pygame.image.load(path.join(img_dir, 'shield_gold.png')).convert()
-powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).convert()
 
 ###################################################
 
@@ -399,6 +333,7 @@ while running:
         all_sprites = pygame.sprite.Group()
         player = Player()
         all_sprites.add(player)
+        eShip = enemyShip()
 
     ## changed how many spawn
         ## spawn a group of mob
@@ -413,7 +348,7 @@ while running:
         
 
         ## group for bullets
-        bullets = pygame.sprite.Group()
+        weapons = pygame.sprite.Group()
         powerups = pygame.sprite.Group()
 
         #### Score board variable
@@ -454,7 +389,7 @@ while running:
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
-    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+    hits = pygame.sprite.groupcollide(mobs, weapons, True, True)
     ## now as we delete the mob element when we hit one with a bullet, we need to respawn them again
     ## as there will be no mob_elements left out
     for hit in hits:
