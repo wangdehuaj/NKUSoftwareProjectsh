@@ -265,9 +265,9 @@ class Player(pygame.sprite.Sprite):
         
 
     def hide(self):
-        self.hidden = True
-        self.hide_timer = pygame.time.get_ticks()
-        self.rect.center = (WIDTH / 2, HEIGHT + 200)
+        global player_hide_timer
+        player_hide_timer = pygame.time.get_ticks()
+        self.kill()
 
 
 
