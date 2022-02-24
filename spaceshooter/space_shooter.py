@@ -270,7 +270,17 @@ class Player(pygame.sprite.Sprite):
         self.kill()
 
 
-
+def check_player(player_status, death_time):
+    if player_status and death_time > 1000:
+        global player
+        player = Player()
+        player.rect.centerx = WIDTH / 2
+        player.rect.bottom = HEIGHT - 30
+        all_sprites.add(player)
+        return 0
+    else:
+        print 'death timer insufficeient'
+        return 1
 
 ###################################################
 ## Load all game images
@@ -380,12 +390,7 @@ while running:
         all_sprites.update()
 
 
-    if not player.alive() and pygame.time.get_ticks() - player_hide_timer > 1000:
-            print 'new player'
-            player = Player()
-            player.rect.centerx = WIDTH / 2
-            player.rect.bottom = HEIGHT - 30
-            all_sprites.add(player)
+    check_player(not player.alive(), pygame.time.get_ticks() - player_hide_timer)
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
