@@ -10,7 +10,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         if direction < 0: 
             self.image = bullet_img 
-        else: 
+        else:
             self.image = ebullet_img
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()

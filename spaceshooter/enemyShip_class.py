@@ -23,7 +23,6 @@ class enemyShip(pygame.sprite.Sprite):
         self.speedy = 3
         self.last_shot = pygame.time.get_ticks()
         self.shoot_delay = 250
-        #self.last_update = pygame.time.get_ticks()
 
     def update(self):
         if (self.rect.right > WIDTH - 10):
@@ -43,11 +42,10 @@ class enemyShip(pygame.sprite.Sprite):
             self.shoot()
 
     def shoot(self):
-        ##print('shoot')
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
-            ebullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
+            ebullet = Bullet(self.rect.centerx, self.rect.bottom + 10, self.direction)
             all_sprites.add(ebullet)
             bullets.add(ebullet)
             #shooting_sound.play()
