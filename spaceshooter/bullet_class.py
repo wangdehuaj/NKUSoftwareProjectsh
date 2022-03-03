@@ -10,8 +10,10 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         if direction < 0: 
             self.image = bullet_img 
-        else:
+        elif direction > 0:
             self.image = ebullet_img
+        else:
+            print("not a valid option")
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         ## place the bullet according to the current position of the player
