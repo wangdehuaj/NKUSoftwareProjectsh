@@ -350,7 +350,7 @@ while running:
         menu_display = False
 
         ## group all the sprites together for ease of update
-        all_sprites = pygame.sprite.Group()
+        
         player = Player()
         all_sprites.add(player)
         eShip = enemyShip()
