@@ -1,27 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author: tasdik
-# @Contributers : Branden (Github: @bardlean86)
-# @Date:   2016-01-17
-# @Email:  prodicus@outlook.com  Github: @tasdikrahman
-# @Last Modified by:   tasdik
-# @Last Modified by:   Branden
-# @Last Modified by:   Dic3
-# @Last Modified time: 2016-10-16
-# MIT License. You can find a copy of the License @ http://prodicus.mit-license.org
 
-## Game music Attribution
-## Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3 <http://creativecommons.org/licenses/by/3.0/>
-
-## Additional assets by: Branden M. Ardelean (Github: @bardlean86)
-
-from __future__ import division
-import random
-from os import path
-
-import pygame
-
-from constant import *
 from explosion_class import Explosion
 from mob_class import Mob
 from enemyShip_class import enemyShip
@@ -46,6 +23,14 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
 clock = pygame.time.Clock()     ## For syncing the FPS
 ###############################
+
+
+global player_hide_timer 
+player_hide_timer = pygame.time.get_ticks()
+global player_lives
+player_lives = 3
+
+
 
 def main_menu():
     global screen
@@ -90,7 +75,8 @@ def main_menu():
     draw_text(screen, "press [SPACE] to fire, ", 20, WIDTH/2, (HEIGHT/2)+55)
     draw_text(screen, "press [p] to pause, ", 20, WIDTH/2, (HEIGHT/2)+80)
     draw_text(screen, "press [ENTER] to resume, ", 20, WIDTH/2, (HEIGHT/2)+105)
-    draw_text(screen, "press [esc] to leave the game ", 20, WIDTH/2, (HEIGHT/2)+130)
+    draw_text(screen, "press [esc] to leave the game, ", 20, WIDTH/2, (HEIGHT/2)+130)
+    draw_text(screen, "press [m] to mute/unmute ", 20, WIDTH/2, (HEIGHT/2)+155)
     
     pygame.display.update()
 
@@ -182,13 +168,11 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         self.shield = 100
         self.direction = -10
-        self.bulletstatus = 1
-        self.missilestatus = 1
+        self.bulletstatus = 0
+        self.missilestatus = 0
         self.shoot_delay = 250
         self.last_shot = pygame.time.get_ticks()
-        self.lives = 3
         self.hidden = False
-        self.hide_timer = pygame.time.get_ticks()
         self.power = 1
         self.power_timer = pygame.time.get_ticks()
 
@@ -199,10 +183,7 @@ class Player(pygame.sprite.Sprite):
             self.power_time = pygame.time.get_ticks()
 
         ## unhide
-        if self.hidden and pygame.time.get_ticks() - self.hide_timer > 1000:
-            self.hidden = False
-            self.rect.centerx = WIDTH / 2
-            self.rect.bottom = HEIGHT - 30
+        
 
         self.speedx = 0
         self.speedy = 0## makes the player static in the screen by default. 
@@ -243,12 +224,16 @@ class Player(pygame.sprite.Sprite):
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
             if self.power == 1:
+                self.bulletstatus = 1
+                self.missilestatus = 0
                 bullet = Bullet(self.rect.centerx, self.rect.top, self.direction)
                 all_sprites.add(bullet)
                 weapons.add(bullet)
                 shooting_sound.play()
 
             if self.power == 2:
+                self.bulletstatus = 2
+                self.missilestatus = 0
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction)
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)
                 all_sprites.add(weaponslot1)
@@ -258,6 +243,8 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 3:
+                self.bulletstatus = 3
+                self.missilestatus = 0
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# bullet shoots from right of ship
                 weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # bullet shoots from center of ship
@@ -270,6 +257,7 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
 
             if self.power == 4:
+                self.missilestatus = 1
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
                 weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
@@ -283,6 +271,7 @@ class Player(pygame.sprite.Sprite):
                 missile_sound.play()
 
             if self.power >= 5:
+                self.missilestatus = 3
                 weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
                 weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
                 weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
@@ -300,12 +289,22 @@ class Player(pygame.sprite.Sprite):
         
 
     def hide(self):
-        self.hidden = True
-        self.hide_timer = pygame.time.get_ticks()
-        self.rect.center = (WIDTH / 2, HEIGHT + 200)
+        global player_hide_timer
+        player_hide_timer = pygame.time.get_ticks()
+        self.kill()
 
 
-
+def check_player(player_status, death_time):
+    if player_status and death_time > 1000:
+        global player
+        player = Player()
+        player.rect.centerx = WIDTH / 2
+        player.rect.bottom = HEIGHT - 30
+        all_sprites.add(player)
+        return 0
+    else:
+        print 'death timer insufficeient'
+        return 1
 
 ###################################################
 ## Load all game images
@@ -350,6 +349,7 @@ player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.ogg'))
 running = True
 menu_display = True
 pause = False
+mute = False
 
 while running:
     if menu_display:
@@ -365,7 +365,7 @@ while running:
         menu_display = False
 
         ## group all the sprites together for ease of update
-        all_sprites = pygame.sprite.Group()
+        
         player = Player()
         all_sprites.add(player)
         eShip = enemyShip()
@@ -390,6 +390,10 @@ while running:
         #### Score board variable
         score = 0
 
+        
+
+        
+
     #1 Process input/events
     clock.tick(FPS)     ## will make the loop run at the same speed all the time
     for event in pygame.event.get(): # gets all the events which have occured till now and keeps tab of them.
@@ -407,10 +411,21 @@ while running:
         #         player.shoot()      ## we have to define the shoot()  function
             elif event.key == pygame.K_p:
                pause = True
+            elif event.key == pygame.K_m:
+                mute = not mute
     #2 Update
     if pause == False:
         all_sprites.update()
 
+    if mute == True:
+        pygame.mixer.pause()
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.unpause()
+        pygame.mixer.music.unpause()
+
+
+    check_player(not player.alive(), pygame.time.get_ticks() - player_hide_timer)
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
@@ -461,6 +476,8 @@ while running:
 
     ## check if the player collides with the mob
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
+
+  if player.alive():
     for hit in hits:
         player.shield -= hit.radius * 2
         expl = Explosion(hit.rect.center, 'sm')
@@ -502,7 +519,7 @@ while running:
             player.powerup()
 
     ## if player died and the explosion has finished, end game
-    if player.lives == 0 and not death_explosion.alive():
+    if player_lives == 0 and not death_explosion.alive():
         running = False
 
         ## write high score
@@ -531,7 +548,7 @@ while running:
     draw_shield_bar(screen, 5, 5, player.shield)
 
     # Draw lives
-    draw_lives(screen, WIDTH - 100, 5, player.lives, player_mini_img)
+    draw_lives(screen, WIDTH - 100, 5, player_lives, player_mini_img)
     draw_bulletstatus(screen, WIDTH - 90, 35, player.bulletstatus, bullet_mini_img)
     draw_missiletatus(screen, WIDTH - 40, 35, player.missilestatus, missile_mini_img)
 

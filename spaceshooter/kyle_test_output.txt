@@ -1,0 +1,6 @@
+Tested: 10 for enemy to player
+Tested: 20 for enemy to player
+Tested: 30 for enemy to player
+Tested: 0 cannot happen
+Tested: -10 for enemy shooting away
+Tested: -20 for enemy shooting away
