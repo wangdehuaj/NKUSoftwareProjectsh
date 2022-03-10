@@ -5,6 +5,7 @@ from enemyShip_class import enemyShip
 from alien_class import Alien
 from bullet_class import Bullet
 from pow_class import Pow
+from armoredasteroid_class import ArmoredAsteroid
 from missile_class import *
 
 # ## assets folder
@@ -55,7 +56,7 @@ def main_menu():
             pygame.quit()
             quit()
         else:
-            text_file = open("high_scores.txt", "r")
+            text_file = open("high_scores.txt", "w+")
             whole_thing = text_file.read()
             draw_text(screen, "High_score :" + whole_thing , 50, WIDTH/2, (HEIGHT/2) + 100 )
             text_file.close()
@@ -129,10 +130,24 @@ def newalien():
     all_sprites.add(alien)
     mobs.add(alien)
 
-def newmob():
-    mob_element = Mob()
-    all_sprites.add(mob_element)
-    mobs.add(mob_element)
+def newmob(health): #Evan
+    if health != 100:
+        mob_element = Mob()
+        all_sprites.add(mob_element)
+        mobs.add(mob_element)
+        return 1
+    else:
+        for i in range(2):
+            mob_element = Mob()
+            all_sprites.add(mob_element)
+            mobs.add(mob_element)
+        return 2
+
+
+def newArmoredAsteroid(): #Evan
+    aa_element = ArmoredAsteroid()
+    all_sprites.add(aa_element)
+    aas.add(aa_element)
 
 def newEnemy():
     enemy = enemyShip()
@@ -358,11 +373,12 @@ while running:
     ## changed how many spawn
         ## spawn a group of mob
         mobs = pygame.sprite.Group()
-        for i in range(random.randint(8,12)):      ## 8-12 mobs
-            # mob_element = Mob()
-            # all_sprites.add(mob_element)
-            # mobs.add(mob_element)
-            newmob()
+        aas = pygame.sprite.Group()
+        for i in range(random.randint(5,9)):
+            newmob(player.shield)
+            
+        for i in range(random.randint(1,3)):
+            newArmoredAsteroid()
 
         newEnemy()
         
@@ -413,7 +429,8 @@ while running:
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
-    hits = pygame.sprite.groupcollide(mobs, weapons, True, True)
+    hits = pygame.sprite.groupcollide(mobs, weapons, True, True) #Evan
+    aa_hits = pygame.sprite.groupcollide(aas, weapons, False, True) #Evan
     ## now as we delete the mob element when we hit one with a bullet, we need to respawn them again
     ## as there will be no mob_elements left out
     for hit in hits:
@@ -445,7 +462,7 @@ while running:
             pow = Pow(hit.rect.center)
             all_sprites.add(pow)
             powerups.add(pow)
-        newmob()        ## spawn a new mob
+        newmob(player.shield)        ## spawn a new mob
 
         ##Added alien
         if (score % 1000 == 0):
@@ -459,20 +476,37 @@ while running:
 
     ## check if the player collides with the mob
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
-    if player.alive():
-        for hit in hits:
-            player.shield -= hit.radius * 2
-            expl = Explosion(hit.rect.center, 'sm')
-            all_sprites.add(expl)
-            newmob()
-            if player.shield <= 0: 
-                player_die_sound.play()
-                death_explosion = Explosion(player.rect.center, 'player')
-                all_sprites.add(death_explosion)
-                # running = False     ## GAME OVER 3:D
-                global player_lives
-                player_lives -= 1
-                player.hide()
+
+  if player.alive():
+    for hit in hits:
+        player.shield -= hit.radius * 2
+        expl = Explosion(hit.rect.center, 'sm')
+        all_sprites.add(expl)
+        newmob(player.shield)
+        if player.shield <= 0: 
+            player_die_sound.play()
+            death_explosion = Explosion(player.rect.center, 'lg')
+            all_sprites.add(death_explosion)
+            # running = False     ## GAME OVER 3:D
+            player.hide()
+            player.lives -= 1
+            player.shield = 100
+
+    ## check if the player collides with the armored asteroid
+    hits = pygame.sprite.spritecollide(player, aas, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
+    for hit in hits:
+        player.shield -= hit.radius * 2
+        expl = Explosion(hit.rect.center, 'sm')
+        all_sprites.add(expl)
+        newArmoredAsteroid()
+        if player.shield <= 0: 
+            player_die_sound.play()
+            death_explosion = Explosion(player.rect.center, 'lg')
+            all_sprites.add(death_explosion)
+            # running = False     ## GAME OVER 3:D
+            player.hide()
+            player.lives -= 1
+            player.shield = 100    
 
     ## if the player hit a power up
     hits = pygame.sprite.spritecollide(player, powerups, True)
@@ -489,7 +523,7 @@ while running:
         running = False
 
         ## write high score
-        with open("high_scores.txt", "r") as f:
+        with ("high_scores.txt", "r") as f:
             data = f.read()
 
             if data == '':
