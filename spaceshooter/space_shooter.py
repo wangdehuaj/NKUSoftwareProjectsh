@@ -176,6 +176,9 @@ class Player(pygame.sprite.Sprite):
         self.power = 1
         self.power_timer = pygame.time.get_ticks()
 
+    def reset(self):
+        self.__init__()
+
     def update(self):
         ## time out for powerups
         if self.power >=2 and pygame.time.get_ticks() - self.power_time > POWERUP_TIME:
@@ -351,6 +354,8 @@ menu_display = True
 pause = False
 mute = False
 
+player = Player()
+
 while running:
     if menu_display:
         main_menu()
@@ -365,8 +370,6 @@ while running:
         menu_display = False
 
         ## group all the sprites together for ease of update
-        
-        player = Player()
         all_sprites.add(player)
         eShip = enemyShip()
 
@@ -562,7 +565,9 @@ while running:
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
-                
+                    all_sprites.empty()
+                    player.reset()
+                    player_lives = 3
                     running = True
                     menu_display = True
                     break
