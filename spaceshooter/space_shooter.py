@@ -260,7 +260,7 @@ class Player(pygame.sprite.Sprite):
                 self.missilestatus = 1
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
-                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top, self.direction) # Missile shoots from center of ship
                 all_sprites.add(weaponslot1)
                 all_sprites.add(weaponslot2)
                 all_sprites.add(weaponslot3)
@@ -270,11 +270,25 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
                 missile_sound.play()
 
-            if self.power >= 5:
+            if self.power == 5:
+                self.missilestatus = 2
+                weaponslot1 = Missile(self.rect.left, self.rect.centery, self.direction) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery, self.direction)# Missile shoots from right of ship
+                weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # Bullet shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
+                shooting_sound.play()
+                missile_sound.play()
+
+            if self.power >= 6:
                 self.missilestatus = 3
-                weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
-                weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
-                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                weaponslot1 = Missile(self.rect.left, self.rect.centery, self.direction) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery, self.direction)# Missile shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top, self.direction) # Missile shoots from center of ship
                 all_sprites.add(weaponslot1)
                 all_sprites.add(weaponslot2)
                 all_sprites.add(weaponslot3)
@@ -389,10 +403,6 @@ while running:
 
         #### Score board variable
         score = 0
-
-        
-
-        
 
     #1 Process input/events
     clock.tick(FPS)     ## will make the loop run at the same speed all the time
@@ -551,7 +561,7 @@ while running:
     # Draw lives
     draw_lives(screen, WIDTH - 100, 5, player_lives, player_mini_img)
     draw_bulletstatus(screen, WIDTH - 90, 35, player.bulletstatus, bullet_mini_img)
-    draw_missiletatus(screen, WIDTH - 40, 35, player.missilestatus, missile_mini_img)
+    draw_missiletatus(screen, WIDTH - 80, 35, player.missilestatus, missile_mini_img)
 
     ## Done after drawing everything to the screen
     pygame.display.flip()
