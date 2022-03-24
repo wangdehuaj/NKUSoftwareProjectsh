@@ -22,7 +22,7 @@ class enemyShip(pygame.sprite.Sprite):
         self.speedx = 5
         self.speedy = 3
         self.last_shot = pygame.time.get_ticks()
-        self.shoot_delay = 250
+        self.shoot_delay = 500
 
     def update(self):
         if (self.rect.right > WIDTH - 10):
@@ -37,9 +37,7 @@ class enemyShip(pygame.sprite.Sprite):
             self.speedy = -3
         self.rect.x += self.speedx
         self.rect.y += self.speedy
-        keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_SPACE]:
-            self.shoot()
+        self.shoot()
 
     def shoot(self):
         now = pygame.time.get_ticks()
