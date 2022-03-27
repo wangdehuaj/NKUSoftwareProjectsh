@@ -389,7 +389,7 @@ while running:
 
     ## changed how many spawn
         ## spawn a group of mob
-        mobs = pygame.sprite.Group()
+        
         aas = pygame.sprite.Group()
         for i in range(random.randint(5,9)):
             newmob(player.shield)

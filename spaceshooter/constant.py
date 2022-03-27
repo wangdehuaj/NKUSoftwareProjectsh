@@ -48,6 +48,7 @@ bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
 ebullet_img = pygame.image.load(path.join(img_dir, 'laserYellow1.png')).convert()
 all_sprites = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
 
 for image in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, image)).convert())
