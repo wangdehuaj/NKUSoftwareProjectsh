@@ -29,7 +29,8 @@ global player_hide_timer
 player_hide_timer = pygame.time.get_ticks()
 global player_lives
 player_lives = 3
-
+global offset
+offset = 1
 
 
 def main_menu():
@@ -137,10 +138,10 @@ def newmob(health): #Evan
         mobs.add(mob_element)
         return 1
     else:
-        for i in range(2):
-            mob_element = Mob()
-            all_sprites.add(mob_element)
-            mobs.add(mob_element)
+        #for i in range(2):
+        mob_element = Mob()
+        all_sprites.add(mob_element)
+        mobs.add(mob_element)
         return 2
 
 
@@ -217,6 +218,14 @@ class Player(pygame.sprite.Sprite):
             
         self.rect.x += self.speedx
         self.rect.y += self.speedy
+
+    def extralife(self):
+        #Give the player and extra life every so often
+        global player_lives
+        global offset
+        if (score > (1000 * offset) and score != 0):
+            player_lives += 1
+            offset += 1
 
     def shoot(self):
         ## to tell the bullet where to spawn
@@ -374,7 +383,7 @@ while running:
         ## spawn a group of mob
         mobs = pygame.sprite.Group()
         aas = pygame.sprite.Group()
-        for i in range(random.randint(5,9)):
+        for i in range(random.randint(3,7)):
             newmob(player.shield)
             
         for i in range(random.randint(1,3)):
@@ -413,6 +422,7 @@ while running:
                pause = True
             elif event.key == pygame.K_m:
                 mute = not mute
+
     #2 Update
     if pause == False:
         all_sprites.update()
@@ -426,6 +436,7 @@ while running:
 
 
     check_player(not player.alive(), pygame.time.get_ticks() - player_hide_timer)
+    player.extralife()
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
@@ -453,15 +464,14 @@ while running:
             gotScore = 5
         score += gotScore
         random.choice(expl_sounds).play()
-        # m = Mob()
-        # all_sprites.add(m)
-        # mobs.add(m)
+        
         expl = Explosion(hit.rect.center, 'lg')
         all_sprites.add(expl)
         if random.random() > 0.9:
             pow = Pow(hit.rect.center)
             all_sprites.add(pow)
             powerups.add(pow)
+
         newmob(player.shield)        ## spawn a new mob
 
         ##Added alien
