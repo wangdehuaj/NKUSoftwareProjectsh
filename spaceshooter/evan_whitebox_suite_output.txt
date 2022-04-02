@@ -1,0 +1,35 @@
+Test 0 PASSED ---------------------
+Given score: 0
+Player lives is: 3
+This matched the expected value: 3
+
+Test 1 PASSED ---------------------
+Given score: 50
+Player lives is: 3
+This matched the expected value: 3
+
+Test 2 PASSED ---------------------
+Given score: 999
+Player lives is: 3
+This matched the expected value: 3
+
+Test 3 FAILED ---------------------
+Given score: 1000
+Player lives is: 3
+This did not match the expected value: 4
+
+Test 4 PASSED ---------------------
+Given score: 1001
+Player lives is: 4
+This matched the expected value: 4
+
+Test 5 PASSED ---------------------
+Given score: 1645
+Player lives is: 4
+This matched the expected value: 4
+
+Test 6 PASSED ---------------------
+Given score: 2030
+Player lives is: 5
+This matched the expected value: 5
+
