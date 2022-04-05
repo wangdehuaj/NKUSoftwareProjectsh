@@ -477,20 +477,19 @@ while running:
     ## check if the player collides with the mob
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
 
-  if player.alive():
-    for hit in hits:
-        player.shield -= hit.radius * 2
-        expl = Explosion(hit.rect.center, 'sm')
-        all_sprites.add(expl)
-        newmob(player.shield)
-        if player.shield <= 0: 
-            player_die_sound.play()
-            death_explosion = Explosion(player.rect.center, 'lg')
-            all_sprites.add(death_explosion)
-            # running = False     ## GAME OVER 3:D
-            player.hide()
-            player.lives -= 1
-            player.shield = 100
+    if player.alive():
+        for hit in hits:
+            player.shield -= hit.radius * 2
+            expl = Explosion(hit.rect.center, 'sm')
+            all_sprites.add(expl)
+            newmob(player.shield)
+            if player.shield <= 0: 
+                player_die_sound.play()
+                death_explosion = Explosion(player.rect.center, 'player')
+                all_sprites.add(death_explosion)
+                # running = False     ## GAME OVER 3:D
+                player.hide()
+                player_lives -= 1
 
     ## check if the player collides with the armored asteroid
     hits = pygame.sprite.spritecollide(player, aas, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
