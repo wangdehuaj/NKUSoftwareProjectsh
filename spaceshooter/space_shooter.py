@@ -303,7 +303,7 @@ def check_player(player_status, death_time):
         all_sprites.add(player)
         return 0
     else:
-        print 'death timer insufficeient'
+        # print('death timer insufficeient')
         return 1
 
 ###################################################
@@ -491,21 +491,23 @@ while running:
                 player.hide()
                 player_lives -= 1
 
+
     ## check if the player collides with the armored asteroid
     hits = pygame.sprite.spritecollide(player, aas, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
-    for hit in hits:
-        player.shield -= hit.radius * 2
-        expl = Explosion(hit.rect.center, 'sm')
-        all_sprites.add(expl)
-        newArmoredAsteroid()
-        if player.shield <= 0: 
-            player_die_sound.play()
-            death_explosion = Explosion(player.rect.center, 'lg')
-            all_sprites.add(death_explosion)
-            # running = False     ## GAME OVER 3:D
-            player.hide()
-            player.lives -= 1
-            player.shield = 100    
+    if player.alive():
+        for hit in hits:
+            player.shield -= hit.radius * 2
+            expl = Explosion(hit.rect.center, 'sm')
+            all_sprites.add(expl)
+            newArmoredAsteroid()
+            if player.shield <= 0: 
+                player_die_sound.play()
+                death_explosion = Explosion(player.rect.center, 'lg')
+                all_sprites.add(death_explosion)
+                # running = False     ## GAME OVER 3:D
+                player.hide()
+                player_lives -= 1
+                player.shield = 100    
 
     ## if the player hit a power up
     hits = pygame.sprite.spritecollide(player, powerups, True)
@@ -518,21 +520,21 @@ while running:
             player.powerup()
 
     ## if player died and the explosion has finished, end game
-    if player_lives == 0 and not death_explosion.alive():
+    if player_lives <= 0 and not death_explosion.alive():
         running = False
 
         ## write high score
-        with ("high_scores.txt", "r") as f:
-            data = f.read()
+        # with ("high_scores.txt", "r") as f:
+        #     data = f.read()
 
-            if data == '':
-                data = 0
-            data1 = int(data)
-            f.close()
-            if(data1 < score):
-                with open("high_scores.txt", "w") as f:       
-                    f.write(str(score))
-            f.close()
+        #     if data == '':
+        #         data = 0
+        #     data1 = int(data)
+        #     f.close()
+        #     if(data1 < score):
+        #         with open("high_scores.txt", "w") as f:       
+        #             f.write(str(score))
+        #     f.close()
             
         # menu_display = True
         # pygame.display.update()
