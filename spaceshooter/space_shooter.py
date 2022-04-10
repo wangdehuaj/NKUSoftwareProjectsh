@@ -399,7 +399,7 @@ while running:
     for event in pygame.event.get(): # gets all the events which have occured till now and keeps tab of them.
         ## listening for the the X button at the top
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
 
         ## Press ESC to exit game
         if event.type == pygame.KEYDOWN:
