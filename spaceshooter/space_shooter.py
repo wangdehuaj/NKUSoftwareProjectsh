@@ -421,7 +421,7 @@ while running:
     for event in pygame.event.get(): # gets all the events which have occured till now and keeps tab of them.
         ## listening for the the X button at the top
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
 
         ## Press ESC to exit game
         if event.type == pygame.KEYDOWN:
@@ -508,12 +508,12 @@ while running:
             newmob(player.shield)
             if player.shield <= 0: 
                 player_die_sound.play()
-                death_explosion = Explosion(player.rect.center, 'lg')
+                death_explosion = Explosion(player.rect.center, 'player')
                 all_sprites.add(death_explosion)
                 # running = False     ## GAME OVER 3:D
-                #player.hide()
+                player.hide()
                 player_lives -= 1
-                player.shield = 100
+
 
     ## check if the player collides with the armored asteroid
     hits = pygame.sprite.spritecollide(player, aas, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
