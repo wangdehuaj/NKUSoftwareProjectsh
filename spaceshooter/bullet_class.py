@@ -12,6 +12,8 @@ class Bullet(pygame.sprite.Sprite):
             self.image = bullet_img 
         else:
             self.image = ebullet_img
+            self.radius = 10
+            mobs.add(self)
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         ## place the bullet according to the current position of the player

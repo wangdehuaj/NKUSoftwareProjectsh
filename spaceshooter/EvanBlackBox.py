@@ -21,7 +21,6 @@ def newmob(health): #Evan
             mobs.add(mob_element)
         return 2
 
-
 #----------- Start black box testing
 with open("spaceshooter/evan_test_input.txt", "r") as input_file:
     tests = input_file.readlines()

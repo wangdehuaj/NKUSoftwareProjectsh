@@ -29,7 +29,8 @@ global player_hide_timer
 player_hide_timer = pygame.time.get_ticks()
 global player_lives
 player_lives = 3
-
+global offset
+offset = 1
 
 
 def main_menu():
@@ -137,10 +138,10 @@ def newmob(health): #Evan
         mobs.add(mob_element)
         return 1
     else:
-        for i in range(2):
-            mob_element = Mob()
-            all_sprites.add(mob_element)
-            mobs.add(mob_element)
+        #for i in range(2):
+        mob_element = Mob()
+        all_sprites.add(mob_element)
+        mobs.add(mob_element)
         return 2
 
 
@@ -175,6 +176,9 @@ class Player(pygame.sprite.Sprite):
         self.hidden = False
         self.power = 1
         self.power_timer = pygame.time.get_ticks()
+
+    def reset(self):
+        self.__init__()
 
     def update(self):
         ## time out for powerups
@@ -218,6 +222,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
+    def extralife(self):
+        #Give the player and extra life every so often
+        global player_lives
+        global offset
+        if (score > (1000 * offset) and score != 0):
+            player_lives += 1
+            offset += 1
+
     def shoot(self):
         ## to tell the bullet where to spawn
         now = pygame.time.get_ticks()
@@ -260,7 +272,7 @@ class Player(pygame.sprite.Sprite):
                 self.missilestatus = 1
                 weaponslot1 = Bullet(self.rect.left, self.rect.centery, self.direction) # Bullet shoots from left of ship
                 weaponslot2 = Bullet(self.rect.right, self.rect.centery, self.direction)# Bullet shoots from right of ship
-                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top, self.direction) # Missile shoots from center of ship
                 all_sprites.add(weaponslot1)
                 all_sprites.add(weaponslot2)
                 all_sprites.add(weaponslot3)
@@ -270,11 +282,25 @@ class Player(pygame.sprite.Sprite):
                 shooting_sound.play()
                 missile_sound.play()
 
-            if self.power >= 5:
+            if self.power == 5:
+                self.missilestatus = 2
+                weaponslot1 = Missile(self.rect.left, self.rect.centery, self.direction) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery, self.direction)# Missile shoots from right of ship
+                weaponslot3 = Bullet(self.rect.centerx, self.rect.top, self.direction) # Bullet shoots from center of ship
+                all_sprites.add(weaponslot1)
+                all_sprites.add(weaponslot2)
+                all_sprites.add(weaponslot3)
+                weapons.add(weaponslot1)
+                weapons.add(weaponslot2)
+                weapons.add(weaponslot3)
+                shooting_sound.play()
+                missile_sound.play()
+
+            if self.power >= 6:
                 self.missilestatus = 3
-                weaponslot1 = Missile(self.rect.left, self.rect.centery) # Missile shoots from left of ship
-                weaponslot2 = Missile(self.rect.right, self.rect.centery)# Missile shoots from right of ship
-                weaponslot3 = Missile(self.rect.centerx, self.rect.top) # Missile shoots from center of ship
+                weaponslot1 = Missile(self.rect.left, self.rect.centery, self.direction) # Missile shoots from left of ship
+                weaponslot2 = Missile(self.rect.right, self.rect.centery, self.direction)# Missile shoots from right of ship
+                weaponslot3 = Missile(self.rect.centerx, self.rect.top, self.direction) # Missile shoots from center of ship
                 all_sprites.add(weaponslot1)
                 all_sprites.add(weaponslot2)
                 all_sprites.add(weaponslot3)
@@ -351,6 +377,8 @@ menu_display = True
 pause = False
 mute = False
 
+player = Player()
+
 while running:
     if menu_display:
         main_menu()
@@ -365,16 +393,14 @@ while running:
         menu_display = False
 
         ## group all the sprites together for ease of update
-        
-        player = Player()
         all_sprites.add(player)
         eShip = enemyShip()
 
     ## changed how many spawn
         ## spawn a group of mob
-        mobs = pygame.sprite.Group()
+        
         aas = pygame.sprite.Group()
-        for i in range(random.randint(5,9)):
+        for i in range(random.randint(3,7)):
             newmob(player.shield)
             
         for i in range(random.randint(1,3)):
@@ -390,16 +416,12 @@ while running:
         #### Score board variable
         score = 0
 
-        
-
-        
-
     #1 Process input/events
     clock.tick(FPS)     ## will make the loop run at the same speed all the time
     for event in pygame.event.get(): # gets all the events which have occured till now and keeps tab of them.
         ## listening for the the X button at the top
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
 
         ## Press ESC to exit game
         if event.type == pygame.KEYDOWN:
@@ -413,6 +435,7 @@ while running:
                pause = True
             elif event.key == pygame.K_m:
                 mute = not mute
+
     #2 Update
     if pause == False:
         all_sprites.update()
@@ -426,6 +449,7 @@ while running:
 
 
     check_player(not player.alive(), pygame.time.get_ticks() - player_hide_timer)
+    player.extralife()
 
     ## check if a bullet hit a mob
     ## now we have a group of bullets and a group of mob
@@ -453,15 +477,14 @@ while running:
             gotScore = 5
         score += gotScore
         random.choice(expl_sounds).play()
-        # m = Mob()
-        # all_sprites.add(m)
-        # mobs.add(m)
+        
         expl = Explosion(hit.rect.center, 'lg')
         all_sprites.add(expl)
         if random.random() > 0.9:
             pow = Pow(hit.rect.center)
             all_sprites.add(pow)
             powerups.add(pow)
+
         newmob(player.shield)        ## spawn a new mob
 
         ##Added alien
@@ -485,12 +508,12 @@ while running:
             newmob(player.shield)
             if player.shield <= 0: 
                 player_die_sound.play()
-                death_explosion = Explosion(player.rect.center, 'lg')
+                death_explosion = Explosion(player.rect.center, 'player')
                 all_sprites.add(death_explosion)
                 # running = False     ## GAME OVER 3:D
-                #player.hide()
+                player.hide()
                 player_lives -= 1
-                player.shield = 100
+
 
     ## check if the player collides with the armored asteroid
     hits = pygame.sprite.spritecollide(player, aas, True, pygame.sprite.collide_circle) ## gives back a list, True makes the mob element disappear
@@ -551,7 +574,7 @@ while running:
     # Draw lives
     draw_lives(screen, WIDTH - 100, 5, player_lives, player_mini_img)
     draw_bulletstatus(screen, WIDTH - 90, 35, player.bulletstatus, bullet_mini_img)
-    draw_missiletatus(screen, WIDTH - 40, 35, player.missilestatus, missile_mini_img)
+    draw_missiletatus(screen, WIDTH - 80, 35, player.missilestatus, missile_mini_img)
 
     ## Done after drawing everything to the screen
     pygame.display.flip()
@@ -562,7 +585,9 @@ while running:
             ev = pygame.event.poll()
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_RETURN:
-                
+                    all_sprites.empty()
+                    player.reset()
+                    player_lives = 3
                     running = True
                     menu_display = True
                     break
